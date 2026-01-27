@@ -100,18 +100,23 @@ They handle the comuncations between domain and user:
 - **Group Policy Enforcement**: The DC applies Group Policies to users and computers when they log in or refresh their policies.
 - **Replication**: DCs automatically synchronize their AD database with other DCs in the same domain, ensuring all controllers have identical, up-to-date information.
 
-###### In summary: Forest, Tree, Domain
+###### In summary: Forest, Tree, Domain, and Organizational Units
 
 | Concept | Definition | Example |
-|---------|------------|---------|
+|---------|------------|----------|
 | **Domain** | A logical group of users, computers, and resources that share the same AD database and security policies. Has a single DNS namespace. | `domolia.local` |
 | **Tree** | A collection of one or more domains that share a **contiguous DNS namespace** (parent-child relationship). The first domain in a tree is the **root domain** of that tree. | `domolia.local` → `workshop.domolia.local` → `paris.workshop.domolia.local` |
 | **Forest** | The top-level container that holds one or more trees. All trees in a forest share the same schema and global catalog. The first domain ever created becomes the **forest root domain**. | A forest containing `domolia.local` tree and `partner.com` tree |
+| **Organizational Unit (OU)** | A container within Active Directory used to organize users, computers, and other objects hierarchically. **OUs are not file system folders**—they exist only in AD for management and policy application. | `DOMOLIA\Administration OU` (holds `admin.user` account); `DOMOLIA\Workshop OU` (holds `workshop.user` account) |
 
 **Important distinctions:**
 - **Root Domain**: The very first domain created in a forest. It holds special roles (Schema Master, Domain Naming Master) and cannot be removed without destroying the entire forest.
 - **Tree vs Domain**: A tree IS a domain hierarchy. A single domain by itself is also a tree (with just one node). Multiple domains form a tree only when they share contiguous DNS names (e.g., `child.parent.local`).
 - **Multiple DCs ≠ Multiple Domains**: You can have 10 Domain Controllers all serving the **same** domain for redundancy.
+- **OUs** = containers in Active Directory for organizing *user accounts* and applying *Group Policies*. You could also delegate control of OUs to different admin sections (e.g., Sales department manager can manage `Sales OU` users) by using [RSAT tools](https://www.manageengine.com/products/ad-manager/remote-server-administration-tools.html).
+- **File System Folders** (shares) = directories on disk for storing *data files*
+You need **both**: OUs to organize users in AD, and folders on disk for those users to store files in.
+
 
 ###### Forest Architecture Options
 
@@ -536,6 +541,9 @@ But before that, like for the DC-ADMIN, we need to first:
 
 ![alt text](./images/sameDomain.png)
 
+**Reminder**
+The 2 servers VM should be on the same network so they can communicate together (here a host-only network in VirtualBox) and of course both servers should be up and running. 
+
 Let's configure the second domain controller now:
 1) Manage > Add Roles and Features > Role-based > AD DS (include management tools)
 2) After install, click "Promote this server to a domain controller"
@@ -557,6 +565,7 @@ DC1-ADMIN (server name)    DC2-WORKSHOP (server name)
     └─── DOMOLIA\admin.user     (same account, replicated)
     └─── All OUs & groups       (all replicated)
 ```
+So the local users used to log into the admin/office server is replace by this new domain user DOMOLIA\Administrator and the same is true for the workshop server. So now both servers use the same domain user to log in and their old local users were either replace by DOMOLIA\Administrator or still exist but they are not require. 
 
 Verify:
 - Both DCs show in Active Directory Sites and Services
@@ -586,13 +595,94 @@ Alright, now that both domain controllers are up and running in the same forest 
 
 ---
 
-###### Let's create the appropriate folders now
+###### User account creation and resources creation
 
-**Following Option A layout:** We have one domain (domolia.local) with two DCs. We'll create shares on each DC.
+Since we have a single domain (domolia.local), all users and groups are in one place.
+
+To properly set up file shares with correct permissions, follow these steps:
+1. Create **OUs in Active Directory** — to organize users and groups
+2. Create **user accounts** in those OUs
+3. Create **security groups** and assign users to them
+4. Create **file system folders** (shares on disk) — knowing which accounts will access them
+5. Apply **NTFS permissions** on the folders, granting access to specific groups (not "Everyone")
+
+
+Why create OUs?
+- Organization: keep users, groups, and computers structured by department or role (e.g., Administration, Workshop).
+- Delegation: safely delegate day‑to‑day tasks (reset passwords, create users) to specific staff for a specific OU without granting domain‑wide admin.
+- Group Policy targeting: link GPOs to OUs to apply settings only to the intended users/computers (e.g., different drive mappings or workstation settings per area).
+- Lifecycle management: move/disable/archive accounts by OU, making audits and cleanup easier.
+- Clarity and scalability: as the directory grows, OUs prevent a flat, messy Users container.
+
+
+
+**Step 1: Create Organizational Units (OUs) in Active Directory**
+
+Click to tools > **Active Directory Users and Computers** to open it. 
+![alt text](./images/tools.png)
+
+You can see that we now have our domain "domolia.local" created with the two servers as domain controllers.
+It is here where we will create our Organizational Units (OUs) and user accounts.
+![alt text](./images/image-1.png)
+On DC1-ADMIN, open **Active Directory Users and Computers**:
+1) Right-click domolia.local > New > Organizational Unit
+   - Name: **Administration** (can keep the "Protect from accidental deletion" checked)
+   - Purpose: This OU will contain user accounts that need access to Administration resources
+2) Create OU: **Workshop**
+   - Purpose: This OU will contain user accounts that work with Workshop resources
+3) Create OU: **Groups**
+   - Purpose: This OU will contain security groups that control share access
+
+![alt text](./images/image-2.png)
+
+
+**Step 2: Create Security Groups**
+In the **Groups** OU, create three Global security groups:
+   Right-click domolia.local > New > group
+- **GG_Admin_RW** — for Administration share access
+- **GG_Generic_RW** — for Generic share access (all users)
+- **GG_Projects_RW** — for Projects share access
+
+
+**Step 3: Create User Accounts**
+
+**Administration user:**
+- OU: Administration
+- Right-click domolia.local > New > User
+- Username: admin.user (or alice.manager)
+- Member of: GG_Admin_RW, GG_Generic_RW
+
+**Workshop user:**
+- OU: Workshop
+- Right-click domolia.local > New > User
+- Username: workshop.user (or bob.worker)
+- Member of: GG_Projects_RW, GG_Generic_RW
+
+![alt text](./images/createUser.png)
+![alt text](./images/image-3.png)
+![alt text](./images/image-5.png)
+![alt text](./images/image-4.png)
+
+**Now we know our users and groups exist. Let's create the file system folders.**
+
+**Step 4: Create Folders and Set Up Shares**
+
+Folder structure we're building:
+
+```
+DC1-ADMIN (C:\ drive)
+└─ Shares\
+   ├─ Administration\         ← Accessible by: admin.user (via GG_Admin_RW group)
+   └─ Generic\                ← Accessible by: admin.user + workshop.user (via GG_Generic_RW group)
+
+DC2-WORKSHOP (C:\ drive)
+└─ Shares\
+   └─ Projects\               ← Accessible by: workshop.user (via GG_Projects_RW group)
+```
 
 **On DC1-ADMIN (Administration Building) — 192.168.1.10:**
 
-1) Create folders:
+1) Create folders via PowerShell:
    ```powershell
    New-Item -Path "C:\Shares\Administration" -ItemType Directory
    New-Item -Path "C:\Shares\Generic" -ItemType Directory
@@ -601,11 +691,11 @@ Alright, now that both domain controllers are up and running in the same forest 
 2) Share them:
    - Right-click each folder > Properties > Sharing > Advanced Sharing
    - Share name: **Administration** and **Generic**
-   - Share permissions: Everyone = Read (we'll control via NTFS)
+   - Share permissions: add the GG_Admin_RW group for Administration share and GG_Generic_RW for Generic share with Read/Write permission.
 
-3) Set NTFS permissions (after creating groups in next section):
-   - C:\Shares\Administration: NTFS > Security > Edit > Add "DOMOLIA\GG_Admin_RW" with Modify
-   - C:\Shares\Generic: NTFS > Security > Edit > Add "DOMOLIA\GG_Generic_RW" with Modify
+![alt text](./images/image-6.png)
+
+You can remove the access for "Everyone" if it is present.
 
 **On DC2-WORKSHOP (Workshop Building) — 192.168.1.11:**
 
@@ -617,53 +707,80 @@ Alright, now that both domain controllers are up and running in the same forest 
 2) Share it:
    - Right-click > Properties > Sharing > Advanced Sharing
    - Share name: **Projects**
-   - Share permissions: Everyone = Read
+   - Share permissions: add the GG_Projects_RW group for Projects share with Read/Write permission.
 
-3) Set NTFS permissions:
-   - C:\Shares\Projects: NTFS > Security > Edit > Add "DOMOLIA\GG_Projects_RW" with Modify
+You can remove the access for "Everyone" if it is present.
+
+##### What is NTFS and how do permissions work?
+
+**Two layers of permissions:**
+
+Network access: `\\DC1-ADMIN\Administration` → checks Share perms first, then NTFS
+Local access: `C:\Shares\Administration` (at server console) → NTFS ONLY
+
+```
+┌────────────────────────────────────────────────────────────────┐
+│ SCENARIO 1: Network Access (from workstation)                 │
+│                                                                │
+│  [Workstation] ──────→ \\DC1-ADMIN\Administration            │
+│       ↓                                                        │
+│   Step 1: Check SHARE permissions (did user get through?)     │
+│       ↓                                                        │
+│   Step 2: Check NTFS permissions (what can they do?)          │
+│       ↓                                                        │
+│   Result: MOST RESTRICTIVE wins                               │
+└────────────────────────────────────────────────────────────────┘
+
+┌────────────────────────────────────────────────────────────────┐
+│ SCENARIO 2: Local Access (sitting at the server console)      │
+│                                                                │
+│  [Admin at DC1-ADMIN] ──→ C:\Shares\Administration           │
+│       ↓                                                        │
+│   Step 1: Share permissions = SKIPPED (not network access)    │
+│       ↓                                                        │
+│   Step 2: Check NTFS permissions ONLY                         │
+│       ↓                                                        │
+│   Result: NTFS is the ONLY protection                         │
+└────────────────────────────────────────────────────────────────┘
+```
+
+**What does "over the network" mean?**
+- Network access = using a UNC path like `\\DC1-ADMIN\Administration` from another computer
+- Local access = directly opening `C:\Shares\Administration` at the server itself
+
+**Why you need BOTH:**
+
+| Scenario | Share Perms | NTFS Perms | Result | Why? |
+|----------|-------------|------------|--------|------|
+| Network user connects | GG_Admin_RW = Full | GG_Admin_RW = Modify | **Modify** | Most restrictive wins |
+| Network user connects | GG_Admin_RW = Read | GG_Admin_RW = Modify | **Read** | Share blocks them first |
+| Network user connects | Everyone = Full | GG_Admin_RW = Modify | **Modify** | NTFS enforces security |
+| Local admin at server | (skipped) | Everyone = Full | **Full** | ⚠️ No protection! |
+| Network + bad NTFS | GG_Admin_RW = Read | Everyone = Full | **Read** | Share saved you |
+
+**What if you only used Share permissions (no NTFS)?**
+- ❌ Anyone with local/console access bypasses ALL security
+- ❌ No inheritance control (can't set different perms for subfolders)
+- ❌ No auditing of file access
+- ❌ No owner tracking
+
+**What if you only used NTFS (no Share)?**
+- ❌ Can't create network shares at all
+- But if the share exists with Everyone=Full: NTFS alone protects the files
+
+**Best practice:**
+1. **Share permissions**: Grant the intended group **Change** or **Full Control**, remove **Everyone**
+2. **NTFS permissions**: Grant the intended group **Modify**, remove **Everyone** 
+3. Result: Secure for both network and local access, NTFS enforces least privilege
+
+Apply NTFS Permissions on shares in the Properties > Sharing > Advanced Sharing > Security:
+    C:\Shares\Administration → GG_Admin_RW (Modify)
+    C:\Shares\Generic → GG_Generic_RW (Modify)
+    C:\Shares\Projects → GG_Projects_RW (Modify)
 
 
-
-###### User account creation
-
-Since we have a single domain (domolia.local), all users and groups are in one place.
-
-**Step 1: Create Organizational Units (OUs)**
-
-In Active Directory Users and Computers:
-1) Right-click domolia.local > New > Organizational Unit
-   - Name: **Administration** (uncheck "Protect from accidental deletion" for lab)
-2) Create OU: **Workshop**
-3) Create OU: **Groups**
-
-**Step 2: Create Security Groups**
-
-In the **Groups** OU, create three Global security groups:
-- **GG_Admin_RW** — for Administration share access
-- **GG_Generic_RW** — for Generic share access (all users)
-- **GG_Projects_RW** — for Projects share access
-
-
-**Step 3: Create User Accounts**
-
-**Administration user:**
-- OU: Administration
-- Username: admin.user (or alice.manager)
-- Member of: GG_Admin_RW, GG_Generic_RW
-
-
-**Workshop user:**
-- OU: Workshop
-- Username: workshop.user (or bob.worker)
-- Member of: GG_Projects_RW, GG_Generic_RW
-
-
-**Step 4: Apply NTFS Permissions**
-
-Now go back and set the NTFS permissions on shares (as mentioned in previous section):
-- C:\Shares\Administration → GG_Admin_RW (Modify)
-- C:\Shares\Generic → GG_Generic_RW (Modify)
-- C:\Shares\Projects → GG_Projects_RW (Modify)
+![alt text](./images/image-7.png)
+![alt text](./images/image-8.png)
 
 
 #### Connecting Windows 11 Workstation to the Domain
@@ -713,3 +830,5 @@ That was the first project of the windows branch, next to go [Automatic Director
 • https://youtu.be/7xOUsirYLYU?si=dGb7gVPXpzg-4N_q
 • https://youtube.com/playlist?list=PLQ6jKtBHSpE8C6zLCPDbLjqX4PyC0-qKe&si=edEjfQw_OEdIvLdW
 • https://youtu.be/ADakXsa8ry8?si=LPoj8pBEMbREDG1H
+https://stackoverflow.com/questions/16481110/deleting-ous-in-active-directory-users-and-computers
+https://youtu.be/a7OqdLAdK28?si=2tDLuDPw932h8nuG
