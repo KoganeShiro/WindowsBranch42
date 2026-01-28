@@ -3,6 +3,31 @@
 This project introduces you to the basics of system administration under the Microsoft Server operating system.
 In this project, you are introduced to the functionality and features of Active Directory (AD).
 
+## Table of Content
+
+- [What is an active directory?](#what-is-an-active-directory)
+- [Requirement](#requirement)
+   - [Forest creation](#forest-creation)
+   - [Domain controller configuration](#domain-controller-configuration)
+   - [Resources creation](#resources-creation)
+   - [User account creation](#user-account-creation)
+- [Walkthrough](#walkthrough)
+   - [But wait, what do we mean? a forest?](#but-wait-what-do-we-mean--a-forest-)
+   - [Forest Architecture Options](#forest-architecture-options)
+      - [What is Replication?](#what-is-replication)
+   - [What We're Building: Single-Domain Forest](#what-were-building-single-domain-forest)
+   - [Creating the Forest on Windows Server 2025](#creating-the-forest-on-windows-server-2025)
+      - [Change the server name](#but-before-that-lets-change-the-server-name)
+      - [Set a static IP address](#--and-set-a-static-ip-address)
+      - [Install Active Directory and create forest](#now-that-the-static-ip-is-set-lets-proceed-to-install-active-directory-and-create-our-forest-)
+      - [Verifying Your Forest](#verifying-your-forest)
+   - [Now let's configure the Domain controller](#now-lets-configure-the-domain-controller)
+   - [User account creation and resources creation](#user-account-creation-and-resources-creation)
+   - [Connecting Windows 11 Workstation to the Domain](#connecting-windows-11-workstation-to-the-domain)
+   - [References and Resources](#resources)
+
+
+
 ### What is an active directory ?
 
 **Active Directory (AD)** is Microsoft's directory service built into Windows Server. It is a centralized system that stores information about users (+ their devices like pc or printer etc..) and also handles logging in (authentication) and permissions (authorization).
@@ -18,7 +43,7 @@ So there are open-source alternatives like [Samba AD DC](https://samba.tranquil.
 
 
 
-### Requirement
+## Requirement
 In this project, you will install and configure the computer infrastructure for "Domolia," a company that specializes in selling home automation tools.
 
 The company is divided into two buildings:
@@ -27,7 +52,7 @@ The company is divided into two buildings:
 
 The company requires **two Microsoft Server installations**, one in each building, along with a **Windows workstation** that will connect to the respective building’s server.
 
-###### Forest creation
+### Forest creation
 In this part, you have to install and configure the **server** located in the **administration** building.
 The server must have the **Active Directory Domain Controller service** installed and configured.
 You need to add any necessary modules you think are required for this service.
@@ -35,36 +60,36 @@ The server must have a suitable name that allows easy identification on the netw
 You should *create a forest on the server* and choose an intelligent name for it.
 
 
-###### Domain controller configuration
+### Domain controller configuration
 In this part, you need to **connect the second server to the first one** in order to enable it to join the existing forest.
 This server will be responsible for **hosting its own domain controller**.
 Similar to the previous server, you should choose an appropriate name for this server.
 
-###### Resources creation
+### Resources creation
 In this part, you are required to create three different folders where users can store important files.
 	• Create a folder on the **Administration server** specifically for storing administrative files.
 	• Create another folder on the **Administration server** for storing generic data and files.
 	• Lastly, create a folder on the **Workshop server** dedicated to storing working project files.
 Ensure that you give clear and descriptive names to these resources so that you can easily identify the contents they hold.
 
-###### User account creation
+### User account creation
 In this part, you need to create a user account on each of the previously created controllers.
 The account on the administration server should have the ability to view and edit the administration resources folder and the generic resources folder.
 On the workshop server, the account should have the capability to view and edit the working resources folder and the generic resources folder.
 
 
-### Walkthrough
+## Walkthrough
 
 Since this is a fairely new project from the 42 network, in our campus we still don't have access to the VM environment so we need an extra step to create it.
 
 From what the subject is telling us, we need 2 VM of Microsoft Server and 2 Windows Workstation that will connect to their respective server.
 
-	You can get the ISO of Windows server 2025 LTS version [here](https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2025) and Windows 11 LTS version [here](https://www.microsoft.com/en-us/evalcenter/evaluate-windows-11-enterprise)
+> You can get the ISO of Windows server 2025 LTS version [here](https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2025) and Windows 11 LTS version [here](https://www.microsoft.com/en-us/evalcenter/evaluate-windows-11-enterprise)
 
 You can then configure your vm on the manager of your choice. 
 Don't forget to choose the desktop version (for the graphical interface) when installing your windows server !
 
-Finish installing your 4 VM and connect to the windows server office (this may take some time).
+You can finish installing your 4 VM or installing them as we move forward and connect to the windows server office (this may take some time).
 If you want, you can create partitions but it's ok if you don't. The reason we may want to create partitions would be if the files on one of our windows server get to big, where there are no removing file policy. The disk may become saturated meaning the windows server os may no longer work since they are on the same partitions. But for this project this is not really necessary.
 
 Make sure to create a network that will link them all together. With virtualbox, go to settings>networks and create a new NAT network by clicking to file>host network manager and create a new network.
@@ -75,7 +100,7 @@ I you ever have some update, it could be good to install them !
 
 From then, lets configure our forest !
 
-##### But wait, what do we mean ? a forest ?
+### But wait, what do we mean ? a forest ?
 
 In Active Directory, a **forest** is the highest level of organization — it's the security and administrative boundary that contains everything in your AD infrastructure. Think of it like this:
 - A **forest** is like a company
@@ -100,7 +125,7 @@ They handle the comuncations between domain and user:
 - **Group Policy Enforcement**: The DC applies Group Policies to users and computers when they log in or refresh their policies.
 - **Replication**: DCs automatically synchronize their AD database with other DCs in the same domain, ensuring all controllers have identical, up-to-date information.
 
-###### In summary: Forest, Tree, Domain, and Organizational Units
+#### In summary: Forest, Tree, Domain, and Organizational Units
 
 | Concept | Definition | Example |
 |---------|------------|----------|
@@ -118,7 +143,7 @@ They handle the comuncations between domain and user:
 You need **both**: OUs to organize users in AD, and folders on disk for those users to store files in.
 
 
-###### Forest Architecture Options
+### Forest Architecture Options
 
 When designing your Active Directory, you need to choose an architecture. Here are the main options:
 
@@ -250,7 +275,7 @@ When designing your Active Directory, you need to choose an architecture. Here a
 
 ---
 
-###### Summary: Quick Comparison
+#### Summary: Quick Comparison
 
 | Aspect | Option 1 (Single-Domain) | Option 2 (Multi-Domain) | Option 3 (Multi-Tree) |
 |--------|--------------------------|-------------------------|----------------------|
@@ -263,7 +288,7 @@ When designing your Active Directory, you need to choose an architecture. Here a
 
 
 ---
-###### What is Replication?
+#### What is Replication?
 
 **Replication** is the automatic process by which Domain Controllers synchronize their Active Directory database with each other. When you make a change on one DC (create a user, reset a password, modify a group), that change is automatically copied to all other DCs.
 
@@ -302,7 +327,7 @@ When designing your Active Directory, you need to choose an architecture. Here a
 
 ---
 
-#### What We're Building: Single-Domain Forest
+### What We're Building: Single-Domain Forest
 
 For Domolia, we'll use **Option 1** because:
 - Small company (two buildings, few users)
@@ -317,21 +342,21 @@ For Domolia, we'll use **Option 1** because:
 
 ---
 
-#### Creating the Forest on Windows Server 2025
+### Creating the Forest on Windows Server 2025
 
-##### But before that, let's change the server name...
+#### But before that, let's change the server name...
 
 Before that and for better comprehension, we need to change the name of your server. For that, you can go to "local server" and modify the name. Your server will have to restart.
 ![screenshot](./images/changeName.png)
 
 
-##### ... and set a static IP address
+#### ... and set a static IP address
 Then, you should make your server have a **static IP address** to ensure network connectivity otherwise:
    - DNS points to `192.168.1.10` for `domolia.local` → if DC1 gets a new IP, DNS breaks
    - Workstations are configured to find DNS at `192.168.1.10` → if it changes, they can't log in
    - Replication between DCs uses IP addresses → changing IPs breaks replication
 
-###### But, how to Choose the Static IP Address ?
+#### But, how to Choose the Static IP Address ?
 
 **Reminder:**
 
@@ -435,7 +460,7 @@ Ethernet adapter Ethernet:
 ![alt text](./images/staticIP2.png)
 
 
-##### Now that the static IP is set, let's proceed to install Active Directory and create our forest !
+#### Now that the static IP is set, let's proceed to install Active Directory and create our forest !
 
 1. **Open Server Manager** (will opens automatically on login)
 
@@ -526,7 +551,7 @@ Should return your DC's IP
 
 Now that the forest is created, let's connect the second server to it !
 
-###### Now let's configure the Domain controller 
+#### Now let's configure the Domain controller 
 
 Actually, we already did configure a domain controller...
 That was when we created the forest on the first server (DC1-ADMIN). Since a forest always starts with a domain controller. So now we just need to connect the second server (DC2-WORKSHOP) to the forest and promote it to a domain controller as well.
@@ -595,7 +620,7 @@ Alright, now that both domain controllers are up and running in the same forest 
 
 ---
 
-###### User account creation and resources creation
+#### User account creation and resources creation
 
 Since we have a single domain (domolia.local), all users and groups are in one place.
 
@@ -711,7 +736,7 @@ You can remove the access for "Everyone" if it is present.
 
 You can remove the access for "Everyone" if it is present.
 
-##### What is NTFS and how do permissions work?
+#### What is NTFS and how do permissions work?
 
 **Two layers of permissions:**
 
