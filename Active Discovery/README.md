@@ -785,19 +785,27 @@ Apply NTFS Permissions on shares in the Properties > Sharing > Advanced Sharing 
 
 #### Connecting Windows 11 Workstation to the Domain
 
+You may got problems booting with windows 11, just type esc to boot on your iso.
+
+
 1) Join both Windows 11 clients to **domolia.local**:
-   - Settings > System > About > Rename this PC (advanced) > Domain: domolia.local
+   - **Make sure that your windows 11 are in the same network as your server and don't forget to modify its IP and DNS !**
+   - Settings > System > About > Domain: domolia.local
    - Use Domain Admin credentials; reboot
 
 2) Log in to the Administration client as **DOMOLIA\admin**:
-   - Verify access to \DC1-ADMIN\Administration (Read/Write)
-   - Verify access to \DC1-ADMIN\Generic (Read/Write)
+   - Verify access to \\DC1-ADMIN\Administration (Read/Write)
+   - Verify access to \\DC1-ADMIN\Generic (Read/Write)
    - Should NOT have write access to \DC2-WORKSHOP\Projects
 
 3) Log in to the Workshop client as **DOMOLIA\workshop**:
-   - Verify access to \DC2-WORKSHOP\Projects (Read/Write)
-   - Verify access to \DC1-ADMIN\Generic (Read/Write)
-   - Should NOT have write access to \DC1-ADMIN\Administration
+   - Verify access to \\DC2-WORKSHOP\Projects (Read/Write)
+   - Verify access to \\DC1-ADMIN\Generic (Read/Write)
+   - Should NOT have write access to \\DC1-ADMIN\Administration
+
+![alt text](./images/serverDir.png)
+
+
 
 ##### In Summary
 
@@ -820,15 +828,15 @@ That was the first project of the windows branch, next to go [Automatic Director
 
 
 ### Resources
-• https://learn.microsoft.com/en-us/training/paths/administer-active-directory-domain-services/
-• https://learn.microsoft.com/fr-fr/windows-server/identity/identity-and-access
-• [Step by stp blog on how to configure an AD](https://www.transip.eu/knowledgebase/configuring-an-active-directory-in-windows-server-2019-or-2022)
-• https://www.techtarget.com/searchwindowsserver/definition/Active-Directory-forest-AD-forest
-• https://medium.com/@ademolaivamos7/building-my-homelab-part-1-setting-up-windows-server-2022-in-virtualbox-db09dfe55c4d
-• [tuto playlist](https://www.youtube.com/watch?v=8i13-RklYMI&list=PLd8Sl178d4fSIFtCiHKAhIjj7eZlTAdhO&index=2)
-• https://youtu.be/85-bp7XxWDQ?si=h2vBlj2WXVXqjS1U
-• https://youtu.be/7xOUsirYLYU?si=dGb7gVPXpzg-4N_q
-• https://youtube.com/playlist?list=PLQ6jKtBHSpE8C6zLCPDbLjqX4PyC0-qKe&si=edEjfQw_OEdIvLdW
-• https://youtu.be/ADakXsa8ry8?si=LPoj8pBEMbREDG1H
-https://stackoverflow.com/questions/16481110/deleting-ous-in-active-directory-users-and-computers
-https://youtu.be/a7OqdLAdK28?si=2tDLuDPw932h8nuG
+- https://learn.microsoft.com/en-us/training/paths/administer-active-directory-domain-services/
+- https://learn.microsoft.com/fr-fr/windows-server/identity/identity-and-access
+- [Step by stp blog on how to configure an AD](https://www.transip.eu/knowledgebase/configuring-an-active-directory-in-windows-server-2019-or-2022)
+- https://www.techtarget.com/searchwindowsserver/definition/Active-Directory-forest-AD-forest
+- https://medium.com/@ademolaivamos7/building-my-homelab-part-1-setting-up-windows-server-2022-in-virtualbox-db09dfe55c4d
+- [tuto playlist](https://www.youtube.com/watch?v=8i13-RklYMI&list=PLd8Sl178d4fSIFtCiHKAhIjj7eZlTAdhO&index=2)
+- https://youtu.be/85-bp7XxWDQ?si=h2vBlj2WXVXqjS1U
+- https://youtu.be/7xOUsirYLYU?si=dGb7gVPXpzg-4N_q
+- https://youtube.com/playlist?list=PLQ6jKtBHSpE8C6zLCPDbLjqX4PyC0-qKe&si=edEjfQw_OEdIvLdW
+- https://youtu.be/ADakXsa8ry8?si=LPoj8pBEMbREDG1H
+- https://stackoverflow.com/questions/16481110/deleting-ous-in-active-directory-users-and-computers
+- https://youtu.be/a7OqdLAdK28?si=2tDLuDPw932h8nuG
