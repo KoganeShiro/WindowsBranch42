@@ -1,0 +1,6 @@
+<#
+| Name            | [UserCreation.ps1](./Scripts/UserCreation.ps1)                                                                                                                                                                                                                                                               |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Description** | In hashtable or in specification<br>We assume that<br>- mail address : name.surname@domaineName.com<br>- Basic password : TotalyN0tSecure -> Change at the first co<br>- UserPrincipalName : email address<br>The default password must not be written in clear text<br>in the script |
+| **Parameter**   | - Account name<br>- Organisation Unit to join<br>- Desired group                                                                                                                                                                                    
+#>
