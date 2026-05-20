@@ -34,7 +34,7 @@ Since this project is about doing the same as the previous one but with scripts,
 > You can get the ISO of Windows server 2025 LTS version [here](https://www.microsoft.com/en-us/evalcenter/evaluate-windows-server-2025)
 
 You can then configure your vm on the manager of your choice. 
-Don't forget to choose the desktop version (for the graphical interface) when installing your windows server !
+Don't forget to choose the **desktop version** (for the graphical interface) when installing your windows server !
 
 You can finish installing your 2 server VM.
 	If you want, you can create partitions but it's ok if you don't. The reason we may want to create partitions would be if the files on one of our windows server get to big, where there are no removing file policy. The disk may become saturated meaning the windows server os may no longer work since they are on the same partitions. But for this project this is not really necessary.
@@ -75,37 +75,37 @@ Create script for the following list of actions to automate:
 
 | Name            | [ADPackageInstallor.ps1](./Scripts/ADPackageInstallor.ps1)                              |
 | --------------- | --------------------------------------------------------------------------------------- |
-| **Description** | Install ActiveDirectory and every dependencies needed for the<br>domain controller role |
+| **Description** | Install ActiveDirectory and every dependencies needed for the domain controller role |
 | **Parameter**   | none                                                                                    |
 
 | Name            | [CreateNewForestDomainController.ps1](./Scripts/CreateNewForestDomainController.ps1) |
 | --------------- | --------------------------------------------------------------------- 				 |
-| **Description** | Promote an AD server to Domain Controller by creating a new<br>forest 				 |
-| **Parameter**   | - DomainAddress<br>- NetbiosName                                      				 |
+| **Description** | Promote an AD server to Domain Controller by creating a new forest 				 |
+| **Parameter**   | - DomainAddress - NetbiosName                                      				 |
 
 | Name            | [JoinExistingDomainController.ps1](./Scripts/JoinExistingDomainController.ps1)                |
 | --------------- | --------------------------------------------------------------------------------------------- |
-| **Description** | Promote an AD server to Domain Controller by joining an<br>already existing domain controller |
+| **Description** | Promote an AD server to Domain Controller by joining an already existing domain controller |
 | **Parameter**   | - DomainAddress                                                                               |
 
 ### Data base scripts
 
 | Name            | [CreateDataBase.ps1](./Scripts/CreateDataBase.ps1)                                                                                                          |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------- |
-| **Description** | Create a data base to store every user and group from the<br>Domain Controller                                            |
-| **Parameter**   | - Path to save the result .CSV file<br>- Desired delimiter<br>- An undefined amount of parameter to compose the data base |
+| **Description** | Create a data base to store every user and group from the Domain Controller                                            |
+| **Parameter**   | - Path to save the result .CSV file - Desired delimiter - An undefined amount of parameter to compose the data base |
 
 | Name            | [LoadDataBase.ps1](./Scripts/LoadDataBase.ps1)  |
 | --------------- | ----------------------------------------------- |
 | **Description** | Load a data base from a saving file             |
-| **Parameter**   | - Path to .CSV file to load<br>- File delimiter |
+| **Parameter**   | - Path to .CSV file to load - File delimiter |
 
 ### User scripts
 
 | Name            | [UserCreation.ps1](./Scripts/UserCreation.ps1)                                                                                                                                                                                                                                                               |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Description** | In hashtable or in specification<br>We assume that<br>- mail address : name.surname@domaineName.com<br>- Basic password : TotalyN0tSecure -> Change at the first co<br>- UserPrincipalName : email address<br>The default password must not be written in clear text<br>in the script |
-| **Parameter**   | - Account name<br>- Organisation Unit to join<br>- Desired group                                                                                                                                                                                                                      |
+| **Description** | In hashtable or in specification We assume that - mail address : name.surname@domaineName.com - Basic password : TotalyN0tSecure -> Change at the first co - UserPrincipalName : email address The default password must not be written in clear text in the script |
+| **Parameter**   | - Account name - Organisation Unit to join - Desired group                                                                                                                                                                                                                      |
 
 | Name            | [ResetUserPassword.ps1](./Scripts/ResetUserPassword.ps1)                  |
 | --------------- | -------------------------------------- |
@@ -115,29 +115,29 @@ Create script for the following list of actions to automate:
 | Name            | [EditUserAttribute.ps1](./Scripts/EditUserAttribute.ps1)                                     |
 | --------------- | --------------------------------------------------------- |
 | **Description** | Modify an attribute of the user and set it to a new value |
-| **Parameter**   | - Account name<br>- Attribute name<br>- Desired value     |
+| **Parameter**   | - Account name - Attribute name - Desired value     |
 
 | Name            | [ReadUserInformation.ps1](./Scripts/ReadUserInformation.ps1)                              |
 | --------------- | ---------------------------------------------------- |
 | **Description** | Retreive user information from the server            |
-| **Parameter**   | - Account name<br>- Filter the attribute to retreive |
+| **Parameter**   | - Account name - Filter the attribute to retreive |
 
 | Name            | [ReadDataBaseInformation.ps1](./Scripts/ReadDataBaseInformation.ps1)                          |
 | --------------- | ---------------------------------------------------- |
 | **Description** | Retreive every users informations from the server    |
-| **Parameter**   | - Account name<br>- Filter the attribute to retreive |
+| **Parameter**   | - Account name - Filter the attribute to retreive |
 
 ### Group scripts
 
 | Name            | [CreateGroup.ps1](./Scripts/CreateGroup.ps1)                                                       |
 | --------------- | --------------------------------------------------------------------- |
 | **Description** | Create a new group                                                    |
-| **Parameter**   | - Group name<br>- Organisation unit<br>- Group scope<br>- Description |
+| **Parameter**   | - Group name - Organisation unit - Group scope - Description |
 
 | Name            | [ModifyGroup.ps1](./Scripts/ModifyGroup.ps1)                                              |
 | --------------- | ------------------------------------------------------------ |
 | **Description** | Edit a group by modifying one attribute to a desired value   |
-| **Parameter**   | - Group name<br>- Attribute to edit<br>- New attribute value |
+| **Parameter**   | - Group name - Attribute to edit - New attribute value |
 
 | Name            | [ListUserInGroup.ps1](./Scripts/ListUserInGroup.ps1)                             |
 | --------------- | ----------------------------------------------- |
@@ -146,32 +146,32 @@ Create script for the following list of actions to automate:
 
 | Name            | [CreateDistributionGroup.ps1](./Scripts/CreateDistributionGroup.ps1)                                                         |
 | --------------- | ----------------------------------------------------------------------------------- |
-| **Description** | Creation of a new distribution group to send emails to multi-<br>ples users at once |
-| **Parameter**   | - Group name<br>- Organisation unit<br>- Group scope<br>- Description               |
+| **Description** | Creation of a new distribution group to send emails to multi- ples users at once |
+| **Parameter**   | - Group name - Organisation unit - Group scope - Description               |
 
 | Name            | [AddUserToGroup.ps1](./Scripts/AddUserToGroup.ps1)                                                                              |
 | --------------- | ----------------------------------------------------------------------------------------------- |
-| **Description** | Add a user to the desired group. The script should block if<br>you want to add an unknown user. |
-| **Parameter**   | - User name<br>- Group name                                                                     |
+| **Description** | Add a user to the desired group. The script should block if you want to add an unknown user. |
+| **Parameter**   | - User name - Group name                                                                     |
 
 | Name            | [RemoveUserFromGroup.ps1](./Scripts/RemoveUserFromGroup.ps1)                                                                                                                       |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Description** | Remove a user from the desired group. The script should block<br>the deletion of an unknown user or a user who is not part of<br>the group. |
-| **Parameter**   | - User name<br>- Group name                                                                                                                 |
+| **Description** | Remove a user from the desired group. The script should block the deletion of an unknown user or a user who is not part of the group. |
+| **Parameter**   | - User name - Group name                                                                                                                 |
 
 | Name            | [ImportGroup.ps1](./Scripts/ImportGroup.ps1)                                    |
 | --------------- | -------------------------------------------------- |
 | **Description** | Import the content of a group inside another group |
-| **Parameter**   | - Origin group name<br>- Destination group name    |
+| **Parameter**   | - Origin group name - Destination group name    |
 
 | Name            | [ReadGroupInformation.ps1](./Scripts/ReadGroupInformation.ps1)                                                                                            |
 | --------------- | ------------------------------------------------------------------------------------------------------------------- |
-| **Description** | Retreive information(s) about a group.<br>If no property name are given, the script must retreive all<br>properties |
-| **Parameter**   | - Group name<br>- Optionnal : a property name                                                                       |
+| **Description** | Retreive information(s) about a group. If no property name are given, the script must retreive all properties |
+| **Parameter**   | - Group name - Optionnal : a property name                                                                       |
 
 | Name            | [ReadEveryGroupInformation.ps1](./Scripts/ReadEveryGroupInformation.ps1)                                                                                                        |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
-| **Description** | Retreive information(s) from every group in the domain.<br>If no property name are given, the script must retreive all<br>properties |
+| **Description** | Retreive information(s) from every group in the domain. If no property name are given, the script must retreive all properties |
 | **Parameter**   | - Optionnal : a property name                                                                                                        |
 
 
