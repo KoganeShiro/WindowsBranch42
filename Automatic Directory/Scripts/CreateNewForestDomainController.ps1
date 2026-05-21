@@ -4,54 +4,41 @@
 | **Description** | Promote an AD server to Domain Controller by creating a new forest 				 |
 | **Parameter**   | - DomainAddress
 |                 | - NetbiosName                                      				 |
+https://learn.microsoft.com/en-us/powershell/module/addsdeployment/install-addsforest?view=windowsserver2025-ps
+
+Execute this script on the server that will be the first domain controller to create a new forest:
+```powershell
+Z:\Scripts\CreateNewForestDomainController.ps1 -DomainAddress "domolia.local" -NetbiosName "DOMOLIA"
+```
 #>
 
-. $PSScriptRoot\..\template.ps1
-
-
-$requiredModules = @('ActiveDirectory')
-
 param (
-	# DomainAddress
 	[Parameter(Mandatory = $true)]
 	[string]$DomainAddress,
 
-	# NetbiosName
 	[Parameter(Mandatory = $true)]
-	[string]$NetbiosName,
-
+	[string]$NetbiosName
 )
+
+. $PSScriptRoot\..\template.ps1
+$requiredModules = @('ActiveDirectory')
 
 
 try {
 	Assert-Admin -Skip:$SkipAdminCheck
 	Write-Log -Message "Running as $env:USERNAME on $env:COMPUTERNAME"
-
-    # Create the forest + promote the server to a domain controller
+  Invoke-ScriptAction -ActionName 'Create New Forest and Promote to Domain Controller' -Action {
+    Install-ADDSForest `
+    -DomainName $DomainAddress `
+    -DomainNetbiosName $NetbiosName `
+    -DomainMode "default" `
+    -ForestMode "default" `
+    -InstallDNS `
+    -SafeModeAdministratorPassword (Read-Host -AsSecureString "Enter DSRM Password") `
+    -Force
+  }
 }
 catch {
 	Write-Log -Message $_.Exception.Message -Level 'ERROR'
 	throw
 }
-
-
-Install-ADDSForest 
-  -DomainName "domolia.local" 
-  -DomainNetbiosName "DOMOLIA"
-  -DomainMode "WinThreshold"
-  -ForestMode "WinThreshold"
-  -InstallDNS 
-  -SafeModeAdministratorPassword (Read-Host -AsSecureString "Enter DSRM Password") 
-  -Force
-
-Install-WindowsFeature AD-Domain-Services -IncludeManagementTools
-Install-ADDSForest -DomainName "domolia.local" -DomainNetbiosName "DOMOLIA" -InstallDNS 
-  -SafeModeAdministratorPassword (Read-Host -AsSecureString "DSRM Password") -Force
-
-
-
-
-DC1-ADMIN (192.168.1.10)
-    DNS: localhost
-DC2-WORKSHOP (192.168.1.11)
-    DNS: DC1-ADMIN

@@ -6,7 +6,12 @@
 You first need to install the ActiveDirectory module to be able to use the cmdlets needed for the domain controller role.
 https://learn.microsoft.com/en-us/powershell/module/activedirectory/?view=windowsserver2025-ps
 
-Verify that the module is installed and available if not install it:
+Verify that the module is installed and available if not install it,
+Execute this script on both servers:
+```powershell
+Z:\Scripts\ADPackageInstallor.ps1
+```
+You can open the server manager to check if the role is installed.
 #>
 # Dot source the template for common functions and variables -> https://medium.com/@abshuemail/dot-sourcing-in-powershell-e12046ad6e10
 . $PSScriptRoot\..\template.ps1
@@ -16,7 +21,7 @@ $requiredModules = @('ActiveDirectory')
 
 try {
 	Assert-Admin -Skip:$SkipAdminCheck
-	Write-Log -Message "Running as $env:USERNAME on $env:COMPUTERNAME"
+	Write-Log -Message "[AD PACKAGE INSTALLOR] Running as $env:USERNAME on $env:COMPUTERNAME"
 
 	# Checks if the Active Directory Domain Services role is installed, and installs it if not
 	Invoke-ScriptAction -ActionName 'Install AD DS role and management tools' -Action {

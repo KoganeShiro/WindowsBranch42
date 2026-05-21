@@ -70,6 +70,12 @@ Create script for the following list of actions to automate:
 - List the members of a group.
 - Retrieve information from all groups.
 
+Before running any script, you must execute this command:
+```powershell
+Set-ExecutionPolicy Unrestricted
+```
+-> [source](https://www.it-connect.fr/autoriser-lexecution-de-scripts-powershell/
+)
 
 ### AD installation scripts
 

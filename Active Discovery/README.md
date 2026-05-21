@@ -92,11 +92,11 @@ Don't forget to choose the desktop version (for the graphical interface) when in
 You can finish installing your 4 VM or installing them as we move forward and connect to the windows server office (this may take some time).
 If you want, you can create partitions but it's ok if you don't. The reason we may want to create partitions would be if the files on one of our windows server get to big, where there are no removing file policy. The disk may become saturated meaning the windows server os may no longer work since they are on the same partitions. But for this project this is not really necessary.
 
-Make sure to create a network that will link them all together. With virtualbox, go to settings>networks and create a new NAT network by clicking to file>host network manager and create a new network.
-Then click on adapter 2, enable and attached to "host only adapter" and choose the same network name for the 4 vm.
+Make sure to create a network that will link them all together. With virtualbox, go to `settings>networks` and create a new NAT network by clicking to `file>host network manager` and create a new network.
+Then click on `adapter 2`, enable and attached to "`host only adapter`" and choose the same network name for the 4 vm.
 
 Log in (go to input to send the ctrl+alt+sup signal) the windows manager application will appear.
-I you ever have some update, it could be good to install them !
+If you ever have some update, it could be good to install them !
 
 From then, lets configure our forest !
 

@@ -1,7 +1,7 @@
 # WindowsBranch42
 
 - [Active Discovery](./Active%20Discovery/README.md)
-- [[Automatic Directory]]
+- [Automatic Directory](./Automatic%20Directory/README.md)
 - [[Administrative Directory]]
 - [[Accessible Directory]]
 
