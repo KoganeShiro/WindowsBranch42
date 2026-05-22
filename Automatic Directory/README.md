@@ -74,9 +74,15 @@ Before running any script, you must execute this command:
 ```powershell
 Set-ExecutionPolicy Unrestricted
 ```
--> [source](https://www.it-connect.fr/autoriser-lexecution-de-scripts-powershell/
-)
+-> [source](https://www.it-connect.fr/autoriser-lexecution-de-scripts-powershell/)
 
+Get-WinEvent -LogName "Directory Service" -MaxEvents 30 
+
+Get-DnsClientServerAddress -InterfaceAlias "Ethernet" -AddressFamily IPv4
+Set-DnsClientServerAddress -InterfaceAlias "Ethernet" -ServerAddresses 192.168.1.10
+ipconfig /flushdns
+Restart-Service netlogon
+klist purge
 ### AD installation scripts
 
 | Name            | [ADPackageInstallor.ps1](./Scripts/ADPackageInstallor.ps1)                              |
@@ -106,6 +112,7 @@ Set-ExecutionPolicy Unrestricted
 | **Description** | Load a data base from a saving file             |
 | **Parameter**   | - Path to .CSV file to load - File delimiter |
 
+
 ### User scripts
 
 | Name            | [UserCreation.ps1](./Scripts/UserCreation.ps1)                                                                                                                                                                                                                                                               |
@@ -132,6 +139,7 @@ Set-ExecutionPolicy Unrestricted
 | --------------- | ---------------------------------------------------- |
 | **Description** | Retreive every users informations from the server    |
 | **Parameter**   | - Account name - Filter the attribute to retreive |
+
 
 ### Group scripts
 
@@ -189,6 +197,7 @@ Now that you know how to write automating scripts on windows, how about to dig d
 - https://learn.microsoft.com/en-us/powershell/module/activedirectory/?view=windowsserver2025-ps
 - https://www.it-connect.fr/cours/administrer-active-directory-avec-powershell/
 - https://openclassrooms.com/en/courses/7938616-planifiez-vos-taches-avec-des-scripts-powershell-sur-windows-server/8094005-automatisez-la-configuration-d-active-directory-avec-powershell
+- https://youtu.be/-zDXTLiX_wk?si=St8MwIu7vUfke8E5
 - [Windows course -> Learn automate scripting with powershell](https://learn.microsoft.com/en-us/training/paths/powershell/)
 - [Powershell in a month of lunches book](https://studylib.net/doc/26258040/learn-powershell-in-a-month-of-lunches-covers-windows-lin...)
 - [Don Jones Toolmaking - powershell in a month of lunches playlist](https://youtube.com/playlist?list=PL6D474E721138865A)

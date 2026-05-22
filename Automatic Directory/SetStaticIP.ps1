@@ -12,8 +12,8 @@
 
 Execute this script on both servers to set a static IP configuration that will allow them to join the domain:
 ```powershell
-Z:\SetStaticIP.ps1 -IPAddress "192.168.1.10" -PrefixLength 24 -DNSGateway "127.0.0.1" -DNSAlternateGateway "192.168.1.11" -InterfaceIndex 4  -DefaultGateway "192.168.1.254"
-Z:\SetStaticIP.ps1 -IPAddress "192.168.1.11" -PrefixLength 24 -DNSAlternateGateway "127.0.0.1" -DNSGateway "192.168.1.10" -InterfaceIndex 5  -DefaultGateway "192.168.1.254"
+Z:\SetStaticIP.ps1 -IPAddress "192.168.1.10" -PrefixLength 24 -DNSGateway "127.0.0.1" -InterfaceIndex 4  -DefaultGateway "192.168.1.254" #-DNSAlternateGateway "192.168.1.11" 
+Z:\SetStaticIP.ps1 -IPAddress "192.168.1.11" -PrefixLength 24 -DNSGateway "192.168.1.10" -InterfaceIndex 5  -DefaultGateway "192.168.1.254" #-DNSAlternateGateway "127.0.0.1"
 ```
 #>
 param (

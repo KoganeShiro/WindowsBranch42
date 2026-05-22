@@ -9,8 +9,10 @@ https://learn.microsoft.com/en-us/powershell/module/addsdeployment/install-addsd
 
 Execute this script on the server that will be other domain controller to join the existing domain:
 ```powershell
-Z:\Scripts\JoinExistingDomainController.ps1 -DomainAddress "domolia.local" -TargetServer "192.168.1.11"
+Z:\Scripts\JoinExistingDomainController.ps1 -DomainAddress "domolia.local" #-TargetServer "192.168.1.11"
 ```
+
+domolia\administrator
 #>
 
 # add a parameter if local or distant
@@ -23,13 +25,14 @@ param (
 )
 
 . $PSScriptRoot\..\template.ps1
-$requiredModules = @('ActiveDirectory')
+$requiredModules = @('ActiveDirectory', 'ADDSDeployment')
 
 
 try {
 	Assert-Admin -Skip:$SkipAdminCheck
 	Write-Log -Message " [ JOIN EXISTING DOMAIN CONTROLLER ] Running as $env:USERNAME on $env:COMPUTERNAME"
   Invoke-ScriptAction -ActionName 'Join Existing Domain and Promote to Domain Controller' -Action {
+	Import-RequiredModules -Modules $requiredModules
     $dsrmPassword = Read-Host -AsSecureString "Enter DSRM Password for the new DC"
     $domainCreds = Get-Credential -Message "Enter Domain Admin credentials (e.g., domolia\admin)"
 

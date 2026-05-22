@@ -21,13 +21,14 @@ param (
 )
 
 . $PSScriptRoot\..\template.ps1
-$requiredModules = @('ActiveDirectory')
+$requiredModules = @('ActiveDirectory', 'ADDSDeployment')
 
 
 try {
 	Assert-Admin -Skip:$SkipAdminCheck
 	Write-Log -Message "Running as $env:USERNAME on $env:COMPUTERNAME"
   Invoke-ScriptAction -ActionName 'Create New Forest and Promote to Domain Controller' -Action {
+	Import-RequiredModules -Modules $requiredModules
     Install-ADDSForest `
     -DomainName $DomainAddress `
     -DomainNetbiosName $NetbiosName `
@@ -42,3 +43,8 @@ catch {
 	Write-Log -Message $_.Exception.Message -Level 'ERROR'
 	throw
 }
+
+# Verify with the server manager or with the command:
+# Get-ADDomain -Identity $DomainAddress
+# Nslookup $DomainAddress
+# Get-ADDUser -Filter * 

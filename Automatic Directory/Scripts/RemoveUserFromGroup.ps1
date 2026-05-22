@@ -1,6 +1,45 @@
 <#
 | Name            | [RemoveUserFromGroup.ps1](./Scripts/RemoveUserFromGroup.ps1)                                                                                                                       |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Description** | Remove a user from the desired group. The script should block<br>the deletion of an unknown user or a user who is not part of<br>the group. |
-| **Parameter**   | - User name<br>- Group name  
+| **Description** | Remove a user from the desired group. The script should block the deletion of an unknown user or a user who is not part of<br>the group. |
+| **Parameter**   | - User name
+                    - Group name  
 #>
+param (
+	[Parameter(Mandatory = $true)]
+	[string]$UserName,
+
+	[Parameter(Mandatory = $true)]
+	[string]$GroupName
+)
+
+. $PSScriptRoot\..\template.ps1
+
+$requiredModules = @('ActiveDirectory')
+
+try {
+	Assert-Admin -Skip:$SkipAdminCheck
+	Write-Log -Message "[REMOVE USER FROM GROUP] Running as $env:USERNAME on $env:COMPUTERNAME"
+
+	Invoke-ScriptAction -ActionName 'Remove user from group' -Action {
+		Import-RequiredModules -Modules $requiredModules
+
+        if (-not (Get-ADUser -Identity $UserName -ErrorAction SilentlyContinue)) {
+            throw "User '$UserName' does not exist."
+            return
+        }
+		if (-not (Get-ADGroup -Identity $GroupName -ErrorAction SilentlyContinue)) {
+			throw "Group '$GroupName' does not exist."
+			return
+		}
+        if (-not (Get-ADGroupMember -Identity $GroupName -ErrorAction SilentlyContinue | Where-Object { $_.SamAccountName -eq $UserName })) {
+            throw "User '$UserName' is not a member of group '$GroupName'."
+            return
+        }
+		Remove-ADGroupMember -Identity $GroupName -Members $UserName -Confirm:$false -ErrorAction Stop
+	}
+}
+catch {
+	Write-Log -Message $_.Exception.Message -Level 'ERROR'
+	throw
+}
