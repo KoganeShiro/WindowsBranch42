@@ -6,6 +6,10 @@
                     - File delimiter |
                     
 # https://learn.microsoft.com/fr-fr/powershell/module/microsoft.powershell.utility/import-csv?view=powershell-7.6
+
+```powershell
+Z:\Scripts\LoadDataBase.ps1 -InputPath "Z:\Database\AD_Database.csv" -Delimiter ';'
+```
 #>
 param (
 	[Parameter(Mandatory = $true)]
@@ -34,3 +38,5 @@ catch {
 	Write-Log -Message $_.Exception.Message -Level 'ERROR'
 	throw
 }
+
+# Verification: Import-Csv -Path $InputPath -Delimiter $Delimiter | Select-Object -First 1

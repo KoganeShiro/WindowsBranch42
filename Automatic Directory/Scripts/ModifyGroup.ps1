@@ -5,6 +5,14 @@
 | **Parameter**   | - Group name
                     - Attribute to edit
                     - New attribute value |
+
+https://learn.microsoft.com/en-us/powershell/module/activedirectory/set-adgroup?view=windowsserver2025-ps
+
+Execute this script to update a group attribute:
+```powershell
+Z:\Scripts\ModifyGroup.ps1 -GroupName "testGroup" -AttributeName "Description" -NewValue "Updated description"
+```
+
 #>
 param (
 	[Parameter(Mandatory = $true)]
@@ -39,3 +47,5 @@ catch {
 	Write-Log -Message $_.Exception.Message -Level 'ERROR'
 	throw
 }
+
+# Verification: Get-ADGroup -Identity $GroupName -Properties $AttributeName

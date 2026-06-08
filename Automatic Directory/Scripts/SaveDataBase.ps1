@@ -1,10 +1,18 @@
 <#
-| Name            | [CreateDataBase.ps1](./Scripts/CreateDataBase.ps1)                                                                        |
+| Name            | [SaveDataBase.ps1](./Scripts/SaveDataBase.ps1)                                                                        |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------- |
 | **Description** | Create a data base to store every user and group from the Domain Controller                                            |
 | **Parameter**   | - Path to save the result .CSV file
                     - Desired delimiter
                     - An undefined amount of parameter to compose the data base |
+
+https://learn.microsoft.com/en-us/powershell/module/activedirectory/get-aduser?view=windowsserver2025-ps
+https://learn.microsoft.com/en-us/powershell/module/activedirectory/get-adgroup?view=windowsserver2025-ps
+https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/export-csv?view=powershell-7.6
+
+```powershell
+Z:\Scripts\SaveDataBase.ps1 -OutputPath "Z:\Database\AD_Database.csv" -Delimiter ';' -Attributes 'Name'
+```
 #>
 
 param (
@@ -64,3 +72,5 @@ catch {
     Write-Log -Message $_.Exception.Message -Level 'ERROR'
     throw
 }
+
+# Verification: Import-Csv -Path $OutputPath -Delimiter $Delimiter | Select-Object -First 1

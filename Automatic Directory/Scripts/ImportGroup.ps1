@@ -3,6 +3,13 @@
 | --------------- | -------------------------------------------------- |
 | **Description** | Import the content of a group inside another group |
 | **Parameter**   | - Origin group name<br>- Destination group name    |
+
+Execute this script to import members from one group into another:
+```powershell
+Z:\Scripts\ImportGroup.ps1 -SourceGroupName "GroupA" -DestinationGroupName "GroupB"
+```
+
+
 #>
 param (
 	[Parameter(Mandatory = $true)]
@@ -45,7 +52,7 @@ try {
 		Add-ADGroupMember -Identity $DestinationGroupName -Members $membersToAdd -ErrorAction Stop
 	}
 }
-catch {
-	Write-Log -Message $_.Exception.Message -Level 'ERROR'
-	throw
-}
+			Execute this script to import members from one group into another:
+			```powershell
+			Z:\Scripts\ImportGroup.ps1 -SourceGroupName "GroupA" -DestinationGroupName "GroupB"
+			```

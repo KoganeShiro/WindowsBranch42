@@ -3,6 +3,10 @@
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
 | **Description** | Retreive information(s) from every group in the domain.<br>If no property name are given, the script must retreive all<br>properties |
 | **Parameter**   | - Optionnal : a property name   
+Execute this script to read every group information:
+```powershell
+Z:\Scripts\ReadEveryGroupInformation.ps1 -Attributes "Name","Description","GroupScope"
+```
 #>
 param (
 	[Parameter(Mandatory = $false)]
@@ -33,3 +37,5 @@ catch {
 	Write-Log -Message $_.Exception.Message -Level 'ERROR'
 	throw
 }
+
+# Verification: Get-ADGroup -Filter * -Properties $Attributes | Select-Object -First 1

@@ -102,7 +102,7 @@ klist purge
 
 ### Data base scripts
 
-| Name            | [CreateDataBase.ps1](./Scripts/CreateDataBase.ps1)                                                                                                          |
+| Name            | [SaveDataBase.ps1](./Scripts/SaveDataBase.ps1)                                    |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------- |
 | **Description** | Create a data base to store every user and group from the Domain Controller                                            |
 | **Parameter**   | - Path to save the result .CSV file - Desired delimiter - An undefined amount of parameter to compose the data base |
@@ -115,7 +115,7 @@ klist purge
 
 ### User scripts
 
-| Name            | [UserCreation.ps1](./Scripts/UserCreation.ps1)                                                                                                                                                                                                                                                               |
+| Name            | [UserCreation.ps1](./Scripts/UserCreation.ps1)                      |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Description** | In hashtable or in specification We assume that - mail address : name.surname@domaineName.com - Basic password : TotalyN0tSecure -> Change at the first co - UserPrincipalName : email address The default password must not be written in clear text in the script |
 | **Parameter**   | - Account name - Organisation Unit to join - Desired group                                                                                                                                                                                                                      |
@@ -158,17 +158,17 @@ klist purge
 | **Description** | Retreive an exaustive list of user in the group |
 | **Parameter**   | - Group name                                    |
 
-| Name            | [CreateDistributionGroup.ps1](./Scripts/CreateDistributionGroup.ps1)                                                         |
+| Name            | [CreateDistributionGroup.ps1](./Scripts/CreateDistributionGroup.ps1)                                  |
 | --------------- | ----------------------------------------------------------------------------------- |
 | **Description** | Creation of a new distribution group to send emails to multi- ples users at once |
 | **Parameter**   | - Group name - Organisation unit - Group scope - Description               |
 
-| Name            | [AddUserToGroup.ps1](./Scripts/AddUserToGroup.ps1)                                                                              |
+| Name            | [AddUserToGroup.ps1](./Scripts/AddUserToGroup.ps1)                          |
 | --------------- | ----------------------------------------------------------------------------------------------- |
 | **Description** | Add a user to the desired group. The script should block if you want to add an unknown user. |
 | **Parameter**   | - User name - Group name                                                                     |
 
-| Name            | [RemoveUserFromGroup.ps1](./Scripts/RemoveUserFromGroup.ps1)                                                                                                                       |
+| Name            | [RemoveUserFromGroup.ps1](./Scripts/RemoveUserFromGroup.ps1)                                          |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Description** | Remove a user from the desired group. The script should block the deletion of an unknown user or a user who is not part of the group. |
 | **Parameter**   | - User name - Group name                                                                                                                 |
@@ -178,12 +178,12 @@ klist purge
 | **Description** | Import the content of a group inside another group |
 | **Parameter**   | - Origin group name - Destination group name    |
 
-| Name            | [ReadGroupInformation.ps1](./Scripts/ReadGroupInformation.ps1)                                                                                            |
+| Name            | [ReadGroupInformation.ps1](./Scripts/ReadGroupInformation.ps1)                                        |
 | --------------- | ------------------------------------------------------------------------------------------------------------------- |
 | **Description** | Retreive information(s) about a group. If no property name are given, the script must retreive all properties |
 | **Parameter**   | - Group name - Optionnal : a property name                                                                       |
 
-| Name            | [ReadEveryGroupInformation.ps1](./Scripts/ReadEveryGroupInformation.ps1)                                                                                                        |
+| Name            | [ReadEveryGroupInformation.ps1](./Scripts/ReadEveryGroupInformation.ps1)                     |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
 | **Description** | Retreive information(s) from every group in the domain. If no property name are given, the script must retreive all properties |
 | **Parameter**   | - Optionnal : a property name                                                                                                        |

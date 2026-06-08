@@ -5,7 +5,14 @@
 | **Parameter**   | - User name
                     - Group name                                                                     |
 
+https://learn.microsoft.com/en-us/powershell/module/activedirectory/add-adgroupmember?view=windowsserver2025-ps
+
+Execute this script to add a user to a group:
+```powershell
+Z:\Scripts\AddUserToGroup.ps1 -UserName "testUser" -GroupName "testGroup"
+```
 #>
+
 param (
   [Parameter(Mandatory = $true)]
   [string]$UserName,
@@ -47,3 +54,5 @@ catch {
   Write-Log -Message $_.Exception.Message -Level 'ERROR'
   throw
 }
+
+# Verification: Get-ADGroupMember -Identity $GroupName -Recursive | Where-Object { $_.SamAccountName -eq $UserName }

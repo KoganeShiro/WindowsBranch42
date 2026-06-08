@@ -7,7 +7,13 @@
                     - Group scope
                     - Description               |
 What is a distribution group: 
+ type of group in Active Directory that is specifically used for e-mail applications
+ and is not primarily focused on access control like Security Groups.
 
+Execute this script to create a distribution group:
+```powershell
+Z:\Scripts\CreateDistributionGroup.ps1 -GroupName "MailTeam" -OrganizationalUnit "OU=Groups,DC=domolia,DC=local" -GroupScope Global -Description "Mail distribution group"
+```
 
 #>
 param (
@@ -46,3 +52,5 @@ catch {
 	Write-Log -Message $_.Exception.Message -Level 'ERROR'
 	throw
 }
+
+# Verification: Get-ADGroup -Identity $GroupName -Properties GroupCategory,Description

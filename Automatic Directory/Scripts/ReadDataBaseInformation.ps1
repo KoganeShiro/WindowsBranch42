@@ -5,6 +5,11 @@
 | **Parameter**   | - Filter the attribute to retreive |
 
 https://learn.microsoft.com/en-us/powershell/module/activedirectory/get-aduser?view=windowsserver2025-ps
+
+Execute this script to read every user's information:
+```powershell
+Z:\Scripts\ReadDataBaseInformation.ps1 -Attributes "Name","SamAccountName","Mail"
+```
 #>
 param (
 	[Parameter(Mandatory = $false)]
@@ -35,3 +40,5 @@ catch {
 	Write-Log -Message $_.Exception.Message -Level 'ERROR'
 	throw
 }
+
+# Verification: Get-ADUser -Filter * -Properties $Attributes | Select-Object -First 1

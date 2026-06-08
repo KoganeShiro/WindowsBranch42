@@ -31,7 +31,7 @@ $requiredModules = @('ActiveDirectory', 'ADDSDeployment')
 try {
 	Assert-Admin -Skip:$SkipAdminCheck
 	Write-Log -Message " [ JOIN EXISTING DOMAIN CONTROLLER ] Running as $env:USERNAME on $env:COMPUTERNAME"
-  Invoke-ScriptAction -ActionName 'Join Existing Domain and Promote to Domain Controller' -Action {
+    Invoke-ScriptAction -ActionName 'Join Existing Domain and Promote to Domain Controller' -Action {
 	Import-RequiredModules -Modules $requiredModules
     $dsrmPassword = Read-Host -AsSecureString "Enter DSRM Password for the new DC"
     $domainCreds = Get-Credential -Message "Enter Domain Admin credentials (e.g., domolia\admin)"
@@ -59,3 +59,18 @@ catch {
 	Write-Log -Message $_.Exception.Message -Level 'ERROR'
 	throw
 }
+
+<#
+ Get-AdDomainController -filter * | Select Name, Domain, Forest, IPv4Address, Site                                                                                                                                       
+Name        : DC2-WORKSHOP
+Domain      : domolia.local
+Forest      : domolia.local
+IPv4Address : 192.168.1.11
+Site        : Default-First-Site-Name
+
+Name        : DC1-ADMIN
+Domain      : domolia.local
+Forest      : domolia.local
+IPv4Address : 192.168.1.10
+Site        : Default-First-Site-Name
+#>

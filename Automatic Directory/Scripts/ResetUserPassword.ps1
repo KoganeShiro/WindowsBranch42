@@ -6,6 +6,14 @@
 
 https://learn.microsoft.com/en-us/powershell/module/activedirectory/set-adaccountpassword?view=windowsserver2025-ps
 https://www.it-connect.fr/modifier-le-mot-de-passe-dun-compte-local-avec-powershell/
+
+For service accounts, use Reset-ADServiceAccountPassword instead:
+https://learn.microsoft.com/en-us/powershell/module/activedirectory/reset-adserviceaccountpassword?view=windowsserver2025-ps
+
+Execute this script to reset a user password:
+```powershell
+Z:\Scripts\ResetUserPassword.ps1 -AccountName "testUser"
+```
 #>
 param (
 	[Parameter(Mandatory = $true)]
@@ -52,3 +60,5 @@ catch {
 	Write-Log -Message $_.Exception.Message -Level 'ERROR'
 	throw
 }
+
+# Verification: Get-ADUser -Identity $AccountName -Properties PasswordLastSet | Select-Object Name, PasswordLastSet

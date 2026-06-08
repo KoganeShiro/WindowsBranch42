@@ -4,7 +4,13 @@
 | **Description** | Retreive an exaustive list of user in the group |
 | **Parameter**   | - Group name                                    |
 
+https://learn.microsoft.com/en-us/powershell/module/activedirectory/get-adgroupmember?view=windowsserver2025-ps
 https://www.it-connect.fr/active-directory-powershell-recuperer-la-liste-des-utilisateurs-de-plusieurs-ou/
+
+Execute this script to list users in a group:
+```powershell
+Z:\Scripts\ListUserInGroup.ps1 -GroupName "testGroup"
+```
 #>
 param (
 	[Parameter(Mandatory = $true)]
@@ -35,3 +41,5 @@ catch {
 	Write-Log -Message $_.Exception.Message -Level 'ERROR'
 	throw
 }
+
+# Verification: Get-ADGroupMember -Identity $GroupName -Recursive | Where-Object { $_.ObjectClass -eq 'user' }

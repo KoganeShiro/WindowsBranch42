@@ -2,11 +2,17 @@
 | Name            | [EditUserAttribute.ps1](./Scripts/EditUserAttribute.ps1)                                     |
 | --------------- | --------------------------------------------------------- |
 | **Description** | Modify an attribute of the user and set it to a new value |
-| **Parameter**   | - Account name- Attribute name<br>- Desired value     |
-                    - Attribute name
-                    - Desired value     |
+| **Parameter**   | - Account name
+					- Attribute name
+					- Desired value     |
+
 
 https://learn.microsoft.com/en-us/powershell/module/activedirectory/set-aduser?view=windowsserver2025-ps
+
+Execute this script to update a user attribute:
+```powershell
+Z:\Scripts\EditUserAttribute.ps1 -AccountName "testUser" -AttributeName "Title" -NewValue "System Administrator"
+```
 #>
 param (
 	[Parameter(Mandatory = $true)]
@@ -41,3 +47,5 @@ catch {
 	Write-Log -Message $_.Exception.Message -Level 'ERROR'
 	throw
 }
+
+# Verification: Get-ADUser -Identity $AccountName -Properties $AttributeName

@@ -6,6 +6,11 @@
                     - Filter the attribute to retreive |
 
 https://learn.microsoft.com/en-us/powershell/module/activedirectory/get-aduser?view=windowsserver2025-ps
+
+Execute this script to read one user's information:
+```powershell
+Z:\Scripts\ReadUserInformation.ps1 -AccountName "testUser" -Attributes "Name","SamAccountName","Mail"
+```
 #>
 param (
 	[Parameter(Mandatory = $true)]
@@ -37,3 +42,5 @@ catch {
 	Write-Log -Message $_.Exception.Message -Level 'ERROR'
 	throw
 }
+
+# Verification: Get-ADUser -Identity $AccountName -Properties $Attributes

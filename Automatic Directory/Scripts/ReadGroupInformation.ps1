@@ -3,6 +3,13 @@
 | --------------- | ------------------------------------------------------------------------------------------------------------------- |
 | **Description** | Retreive information(s) about a group.<br>If no property name are given, the script must retreive all<br>properties |
 | **Parameter**   | - Group name<br>- Optionnal : a property name   
+
+https://learn.microsoft.com/en-us/powershell/module/activedirectory/get-adgroup?view=windowsserver2025-ps
+
+Execute this script to read one group's information:
+```powershell
+Z:\Scripts\ReadGroupInformation.ps1 -GroupName "testGroup" -Attributes "Name","Description","GroupScope"
+```
 #>
 param (
 	[Parameter(Mandatory = $true)]
@@ -40,3 +47,5 @@ catch {
 	Write-Log -Message $_.Exception.Message -Level 'ERROR'
 	throw
 }
+
+# Verification: Get-ADGroup -Identity $GroupName -Properties $Attributes

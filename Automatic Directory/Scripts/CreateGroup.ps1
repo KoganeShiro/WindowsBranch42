@@ -8,6 +8,10 @@
                     - Description |
 
 https://learn.microsoft.com/en-us/powershell/module/activedirectory/new-adgroup?view=windowsserver2025-ps
+
+```powershell
+Z:\Scripts\CreateGroup.ps1 -GroupName Test -OrganizationalUnit "" -GroupScope Global -Description "A test group"
+```
 #>
 param (
 	[Parameter(Mandatory = $true)]
@@ -45,3 +49,5 @@ catch {
 	Write-Log -Message $_.Exception.Message -Level 'ERROR'
 	throw
 }
+
+# Verification: Get-ADGroup -Identity $GroupName -Properties *

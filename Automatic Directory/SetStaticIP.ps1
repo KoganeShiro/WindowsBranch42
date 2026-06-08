@@ -9,6 +9,8 @@
                     -DNSAlternateGateway
                     -InterfaceIndex        |
 
+https://learn.microsoft.com/en-us/powershell/module/nettcpip/new-netipaddress?view=windowsserver2025-ps
+
 
 Execute this script on both servers to set a static IP configuration that will allow them to join the domain:
 ```powershell
