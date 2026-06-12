@@ -39,3 +39,4 @@ catch {
 }
     
 # Type `hostname` or `$env:COMPUTERNAME` to check if the name of the computer did change correctly
+# Verification: hostname

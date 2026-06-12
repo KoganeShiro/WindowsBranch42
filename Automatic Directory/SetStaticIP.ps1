@@ -82,3 +82,6 @@ catch {
     Write-Log -Message $_.Exception.Message -Level 'ERROR'
     throw
 }
+
+
+# Verification: Get-NetIPConfiguration -InterfaceIndex $InterfaceIndex

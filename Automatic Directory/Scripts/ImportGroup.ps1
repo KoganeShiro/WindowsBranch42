@@ -52,7 +52,9 @@ try {
 		Add-ADGroupMember -Identity $DestinationGroupName -Members $membersToAdd -ErrorAction Stop
 	}
 }
-			Execute this script to import members from one group into another:
-			```powershell
-			Z:\Scripts\ImportGroup.ps1 -SourceGroupName "GroupA" -DestinationGroupName "GroupB"
-			```
+catch {
+	Write-Log -Message $_.Exception.Message -Level 'ERROR'
+	throw
+}
+
+# Verification: Get-ADGroupMember -Identity $DestinationGroupName -Recursive | Select-Object SamAccountName

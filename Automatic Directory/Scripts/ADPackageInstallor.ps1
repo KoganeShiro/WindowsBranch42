@@ -50,3 +50,5 @@ catch {
 	Write-Log -Message $_.Exception.Message -Level 'ERROR'
 	throw
 }
+
+# Verification: Get-WindowsFeature -Name 'AD-Domain-Services'; Get-Module ActiveDirectory -ListAvailable

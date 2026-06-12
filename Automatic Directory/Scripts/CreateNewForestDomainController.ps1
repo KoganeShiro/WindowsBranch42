@@ -48,3 +48,4 @@ catch {
 # Get-ADDomain -Identity $DomainAddress
 # Nslookup $DomainAddress
 # Get-ADDUser -Filter * 
+# Verification: Get-ADDomainController -Filter * | Select-Object Name, Domain, Forest, IPv4Address

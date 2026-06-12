@@ -43,4 +43,4 @@ catch {
 	throw
 }
 
-# Verification: Get-ADUser -Identity $AccountName -Properties $Attributes
+# Get-ADUser -Identity $AccountName -Properties $Attributes

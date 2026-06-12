@@ -74,3 +74,5 @@ Forest      : domolia.local
 IPv4Address : 192.168.1.10
 Site        : Default-First-Site-Name
 #>
+
+# Verification: Get-ADDomainController -Filter * | Select-Object Name, Domain, Forest, IPv4Address
