@@ -38,9 +38,14 @@ try {
 			throw "Destination group '$DestinationGroupName' does not exist."
 		}
 
-		$sourceMembers = Get-ADGroupMember -Identity $SourceGroupName -Recursive -ErrorAction Stop |
+		if ($SourceGroupName -eq $DestinationGroupName) {
+			throw 'The source and destination groups must be different.'
+		}
+
+		# Preserve nested-group structure by copying direct members, not a flattened recursive list.
+		$sourceMembers = Get-ADGroupMember -Identity $SourceGroupName -ErrorAction Stop |
 			Select-Object -ExpandProperty DistinguishedName
-		$destinationMembers = Get-ADGroupMember -Identity $DestinationGroupName -Recursive -ErrorAction Stop |
+		$destinationMembers = Get-ADGroupMember -Identity $DestinationGroupName -ErrorAction Stop |
 			Select-Object -ExpandProperty DistinguishedName
 
 		$membersToAdd = $sourceMembers | Where-Object { $_ -notin $destinationMembers }

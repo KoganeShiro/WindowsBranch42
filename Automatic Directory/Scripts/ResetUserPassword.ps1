@@ -46,8 +46,8 @@ try {
 			}
 		}
 
-		$firstPassword = Read-Host -AsSecureString "Enter new password"
-		$secondPassword = Read-Host -AsSecureString "Confirm new password"
+			$firstPassword = Read-SecureInput -Prompt 'Enter the new password'
+			$secondPassword = Read-SecureInput -Prompt 'Confirm the new password'
 		if ((ConvertTo-PlainText -SecureValue $firstPassword) -ne (ConvertTo-PlainText -SecureValue $secondPassword)) {
 			throw 'Password confirmation does not match.'
 		}

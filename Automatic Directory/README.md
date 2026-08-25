@@ -70,11 +70,12 @@ Create script for the following list of actions to automate:
 - List the members of a group.
 - Retrieve information from all groups.
 
-Before running any script, you must execute this command:
+Run the terminal as Administrator. For a temporary lab session, allow local scripts only in the current PowerShell process:
 ```powershell
-Set-ExecutionPolicy Unrestricted
+Set-ExecutionPolicy -Scope Process -ExecutionPolicy RemoteSigned
 ```
--> [source](https://www.it-connect.fr/autoriser-lexecution-de-scripts-powershell/)
+
+Do not permanently set the machine to `Unrestricted`. Follow [PROJECT-GUIDE.md](./PROJECT-GUIDE.md), and read [[PowerShell scripts are reusable commands]] for the scripting concepts.
 
 Get-WinEvent -LogName "Directory Service" -MaxEvents 30 
 
@@ -168,7 +169,7 @@ klist purge
 | **Description** | Add a user to the desired group. The script should block if you want to add an unknown user. |
 | **Parameter**   | - User name - Group name                                                                     |
 
-| Name            | [RemoveUserFromGroup.ps1](./Scripts/RemoveUserFromGroup.ps1)                                          |
+| Name            | [RemoveUserToGroup.ps1](./Scripts/RemoveUserToGroup.ps1)                                              |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Description** | Remove a user from the desired group. The script should block the deletion of an unknown user or a user who is not part of the group. |
 | **Parameter**   | - User name - Group name                                                                                                                 |
@@ -205,5 +206,3 @@ Now that you know how to write automating scripts on windows, how about to dig d
 - [Powershell on AD](https://www.it-connect.fr/cours/administrer-active-directory-avec-powershell/)
 - [Powershell playlist](https://www.youtube.com/watch?v=ZOoCaWyifmI&list=PLmBNQq8ckUwsGrr1JAC8Iv14usVXMBLtp) 
  - [Beginner Resources](https://www.reddit.com/r/PowerShell/wiki/beginners/)
-
-

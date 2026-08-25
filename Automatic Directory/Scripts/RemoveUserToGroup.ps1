@@ -1,5 +1,5 @@
 <#
-| Name            | [RemoveUserFromGroup.ps1](./Scripts/RemoveUserFromGroup.ps1)                                                                                                                       |
+| Name            | [RemoveUserToGroup.ps1](./Scripts/RemoveUserToGroup.ps1)                                                                                                                           |
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Description** | Remove a user from the desired group. The script should block the deletion of an unknown user or a user who is not part of<br>the group. |
 | **Parameter**   | - User name
@@ -9,7 +9,7 @@ https://learn.microsoft.com/en-us/powershell/module/activedirectory/remove-adgro
 
 Execute this script to remove a user from a group:
 ```powershell
-Z:\Scripts\RemoveUserFromGroup.ps1 -UserName "testUser" -GroupName "testGroup"
+Z:\Scripts\RemoveUserToGroup.ps1 -UserName "testUser" -GroupName "testGroup"
 ```
 #>
 param (

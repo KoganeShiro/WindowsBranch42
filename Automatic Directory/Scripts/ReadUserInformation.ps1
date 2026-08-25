@@ -35,7 +35,9 @@ try {
 			throw "User '$AccountName' does not exist."
 		}
 
-		Get-ADUser -Identity $AccountName -Properties $Attributes -ErrorAction Stop
+		$props = $Attributes
+		if (-not $props -or $props.Count -eq 0) { $props = @('*') }
+		Get-ADUser -Identity $AccountName -Properties $props -ErrorAction Stop
 	}
 }
 catch {

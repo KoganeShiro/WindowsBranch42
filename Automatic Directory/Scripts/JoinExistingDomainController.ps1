@@ -33,7 +33,7 @@ try {
 	Write-Log -Message " [ JOIN EXISTING DOMAIN CONTROLLER ] Running as $env:USERNAME on $env:COMPUTERNAME"
     Invoke-ScriptAction -ActionName 'Join Existing Domain and Promote to Domain Controller' -Action {
 	Import-RequiredModules -Modules $requiredModules
-    $dsrmPassword = Read-Host -AsSecureString "Enter DSRM Password for the new DC"
+    $dsrmPassword = Read-SecureInput -Prompt 'Enter the Directory Services Restore Mode password for the new DC'
     $domainCreds = Get-Credential -Message "Enter Domain Admin credentials (e.g., domolia\admin)"
 
     $promoteScript = {

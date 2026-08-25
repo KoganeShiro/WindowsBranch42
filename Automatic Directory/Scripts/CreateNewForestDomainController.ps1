@@ -35,7 +35,7 @@ try {
     -DomainMode "default" `
     -ForestMode "default" `
     -InstallDNS `
-    -SafeModeAdministratorPassword (Read-Host -AsSecureString "Enter DSRM Password") `
+    -SafeModeAdministratorPassword (Read-SecureInput -Prompt 'Enter the Directory Services Restore Mode password') `
     -Force
   }
 }
@@ -47,5 +47,5 @@ catch {
 # Verify with the server manager or with the command:
 # Get-ADDomain -Identity $DomainAddress
 # Nslookup $DomainAddress
-# Get-ADDUser -Filter * 
+# Get-ADUser -Filter *
 # Verification: Get-ADDomainController -Filter * | Select-Object Name, Domain, Forest, IPv4Address

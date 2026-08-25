@@ -3,7 +3,7 @@
 | --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Description** | In hashtable or in specification. We assume that
                     - mail address : name.surname@domaineName.com
-                    - Basic password : DTAuMzAuMzgPNj8oOD8oPw== 
+                    - Basic password : fixed by the subject and obfuscated in this script
                     - UserPrincipalName : email address
                     The default password must not be written in clear text in the script |
 | **Parameter**   | - Account name
@@ -26,10 +26,10 @@ param (
 	[Parameter(Mandatory = $true)]
 	[string]$AccountName,
 
-	[Parameter(Mandatory = $false)]
-	[string]$OrganizationalUnit = "OU=Users,DC=domolia,DC=local",
+	[Parameter(Mandatory = $true)]
+	[string]$OrganizationalUnit,
 
-	[Parameter(Mandatory = $false)]
+	[Parameter(Mandatory = $true)]
 	[string]$GroupName
 )
 
@@ -59,25 +59,25 @@ try {
 			return [Text.Encoding]::UTF8.GetString($bytes)
 		}
 
-		$domain = $env:USERDNSDOMAIN
-		$useDefault = Read-Host "Use default temporary password? (Y/N)"
-		$defaultCipher = 'DTAuMzAuMzgPNj8oOD8oPw=='
+			$domain = (Get-ADDomain -ErrorAction Stop).DNSRoot
+			$useDefault = Read-TextInput -Prompt 'Use the default temporary password? Enter Y or N.' -DefaultValue 'Y'
+			# XOR-obfuscated form of the assignment's temporary password.
+			$defaultCipher = 'DjUuOzYjFGouCT85Lyg/'
 
 		if ($useDefault -match '^(Y|y)$') {
 			$defaultPlain = Get-DefaultPassword -CipherText $defaultCipher
 			$securePassword = ConvertTo-SecureString -String $defaultPlain -AsPlainText -Force
 		} else {
-			$securePassword = Read-Host -AsSecureString "Enter temporary password"
+				$securePassword = Read-SecureInput -Prompt 'Enter the temporary password'
 		}
 
-		$surname = Read-Host "Enter surname (optional, leave blank to use default mail)"
-		$upn = "$AccountName@$domain"
-
-		if ([string]::IsNullOrWhiteSpace($surname)) {
-			$mail = $upn
-		} else {
-			$mail = "$AccountName.$surname@$domain"
-		}
+			$givenName = Read-TextInput -Prompt 'Enter the user given name.' -DefaultValue $AccountName
+			$surname = Read-TextInput -Prompt 'Enter the user surname.'
+			if ([string]::IsNullOrWhiteSpace($givenName) -or [string]::IsNullOrWhiteSpace($surname)) {
+				throw 'Given name and surname are required to construct the mail address.'
+			}
+			$upn = "$AccountName@$domain"
+			$mail = ('{0}.{1}@{2}' -f $givenName, $surname, $domain).ToLowerInvariant()
 
 		# Verify that the target OU/container exists
 		$ouExists = $null
@@ -88,26 +88,17 @@ try {
 		}
 
 		if (-not $ouExists) {
-			Write-Host "The OrganizationalUnit path '$OrganizationalUnit' does not exist."
-			Write-Host "You can list available OUs/containers with the following command:"
-			Write-Host 'Get-ADObject -LDAPFilter "(|(objectClass=organizationalUnit)(objectClass=container))" -SearchBase (Get-ADDomain).DistinguishedName -SearchScope Subtree | Select-Object Name, DistinguishedName, ObjectClass | Sort-Object DistinguishedName'
-			$createOU = Read-Host "Create the OU (will attempt to create the left-most OU in the DN)? (Y/N)"
-			if ($createOU -match '^(Y|y)$') {
-				$dnParts = $OrganizationalUnit -split ','
-				$rdn = $dnParts[0]
-				$name = ($rdn -split '=')[1]
-				$parent = ($dnParts[1..($dnParts.Length-1)] -join ',')
-				if ([string]::IsNullOrWhiteSpace($parent)) {
-					$parent = (Get-ADDomain).DistinguishedName
-				}
-				New-ADOrganizationalUnit -Name $name -Path $parent -ProtectedFromAccidentalDeletion $false -ErrorAction Stop
-			} else {
-				throw "OrganizationalUnit '$OrganizationalUnit' does not exist."
-			}
+			throw "OrganizationalUnit '$OrganizationalUnit' does not exist. Pass an existing distinguished name."
+		}
+		if (-not (Get-ADGroup -Identity $GroupName -ErrorAction SilentlyContinue)) {
+			throw "Group '$GroupName' does not exist."
 		}
 
 		New-ADUser `
-			-Name $AccountName `
+				-Name $AccountName `
+				-GivenName $givenName `
+				-Surname $surname `
+				-DisplayName "$givenName $surname" `
 			-SamAccountName $AccountName `
 			-UserPrincipalName $upn `
 			-Path $OrganizationalUnit `
@@ -117,12 +108,7 @@ try {
 			-OtherAttributes @{ mail = $mail } `
 			-ErrorAction Stop
 
-		if ($GroupName) {
-			if (-not (Get-ADGroup -Identity $GroupName -ErrorAction SilentlyContinue)) {
-				throw "Group '$GroupName' does not exist."
-			}
-			Add-ADGroupMember -Identity $GroupName -Members $AccountName -ErrorAction Stop
-		}
+		Add-ADGroupMember -Identity $GroupName -Members $AccountName -ErrorAction Stop
 	}
 }
 catch {
