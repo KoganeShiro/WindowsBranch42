@@ -1,15 +1,3 @@
----
-Categories: Computer_Science
-Tags: [Computer_Science, PowerShell, System_Administration]
-Source(s):
-  - "[[PowerShell scripts are reusable commands#Resources]]"
-Start_Date: 2026-08-24
-Edit_Date: 2026-08-24
-Related:
-  - "[[Windows cmd vs terminal vs powershell]]"
-  - "[[Active Directory (AD)]]"
-  - "[[Windows Server]]"
----
 
 ## TLDR
 

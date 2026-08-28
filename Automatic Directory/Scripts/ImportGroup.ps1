@@ -2,7 +2,8 @@
 | Name            | [ImportGroup.ps1](./Scripts/ImportGroup.ps1)                                    |
 | --------------- | -------------------------------------------------- |
 | **Description** | Import the content of a group inside another group |
-| **Parameter**   | - Origin group name<br>- Destination group name    |
+| **Parameter**   | - Origin group name
+					- Destination group name    |
 
 Execute this script to import members from one group into another:
 ```powershell
@@ -17,6 +18,9 @@ param (
 
 	[Parameter(Mandatory = $true)]
 	[string]$DestinationGroupName
+,
+
+	[switch]$Interactive
 )
 
 . $PSScriptRoot\..\template.ps1
@@ -27,7 +31,7 @@ try {
 	Assert-Admin -Skip:$SkipAdminCheck
 	Write-Log -Message "[IMPORT GROUP] Running as $env:USERNAME on $env:COMPUTERNAME"
 
-	Invoke-ScriptAction -ActionName 'Import group members' -Action {
+	$result = Invoke-ActionSafely -ActionName 'Import group members' -Action {
 		# Copy missing members from source to destination without duplicating entries.
 		Import-RequiredModules -Modules $requiredModules
 
@@ -55,6 +59,29 @@ try {
 		}
 
 		Add-ADGroupMember -Identity $DestinationGroupName -Members $membersToAdd -ErrorAction Stop
+	}
+
+	if (-not $result.Success) {
+		if ($Interactive) {
+			$resp = Confirm-YesNo -Message "Action failed: $($result.Exception.Message)`nDo you want to continue?" -Title 'Action failed'
+			if (-not $resp) { Throw-WithLog "Action failed: $($result.Exception.Message)" }
+		} else {
+			Throw-WithLog "Action failed: $($result.Exception.Message)"
+		}
+	}
+
+	$validation = Validate-Environment -RequiredModules $requiredModules
+	$problems = @()
+	foreach ($m in $requiredModules) {
+		$info = $validation.Modules[$m]
+		if (-not $info.Available) { $problems += "Module not available: $m" }
+		elseif (-not $info.Loaded) { $problems += "Module available but not loaded: $m" }
+	}
+	if ($problems.Count -gt 0) {
+		$msg = "Environment validation failed:`n" + ($problems -join "`n")
+		Write-Log -Message $msg -Level 'ERROR'
+		if ($Interactive) { [System.Windows.Forms.MessageBox]::Show($msg, 'Validation failed', 'OK', 'Error') }
+		Throw-WithLog $msg
 	}
 }
 catch {

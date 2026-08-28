@@ -99,3 +99,78 @@ function Read-TextInput {
 		$DefaultValue
 	)
 }
+
+function Confirm-YesNo {
+	<#
+	Prompt the user with a Yes/No dialog and return $true for Yes, $false for No.
+	#>
+	param (
+		[Parameter(Mandatory = $true)][string]$Message,
+		[string]$Title = 'Confirmation'
+	)
+	Add-Type -AssemblyName System.Windows.Forms
+	$result = [System.Windows.Forms.MessageBox]::Show($Message, $Title, 'YesNo', 'Question')
+	return $result -eq [System.Windows.Forms.DialogResult]::Yes
+}
+
+function Invoke-ActionSafely {
+	<#
+	Invoke a scriptblock with built-in logging and error capture.
+	Returns a hashtable: @{ Success = [bool]; Exception = [Exception] }
+	#>
+	param (
+		[Parameter(Mandatory = $true)][string]$ActionName,
+		[Parameter(Mandatory = $true)][scriptblock]$Action
+	)
+	Write-Log -Message "Starting: $ActionName"
+	try {
+		& $Action
+		Write-Log -Message "Completed: $ActionName"
+		return @{ Success = $true; Exception = $null }
+	}
+	catch {
+		Write-Log -Message "Failed: $ActionName - $($_.Exception.Message)" -Level 'ERROR'
+		return @{ Success = $false; Exception = $_.Exception }
+	}
+}
+
+function Validate-Environment {
+	<#
+	Validate that required modules and features are present. Returns a hashtable with details.
+	Parameters:
+	  -RequiredModules: string[] of module names to validate (optional)
+	  -CheckADRole: switch to verify AD-Domain-Services feature is installed
+	#>
+	param (
+		[string[]]$RequiredModules = @(),
+		[switch]$CheckADRole
+	)
+
+	$result = [ordered]@{}
+	$result.Modules = @{}
+	foreach ($m in $RequiredModules) {
+		$available = [bool](Get-Module -ListAvailable -Name $m -ErrorAction SilentlyContinue)
+		$loaded = [bool](Get-Module -Name $m -ErrorAction SilentlyContinue)
+		$result.Modules[$m] = @{ Available = $available; Loaded = $loaded }
+	}
+
+	if ($CheckADRole) {
+		try {
+			$feature = Get-WindowsFeature -Name 'AD-Domain-Services' -ErrorAction Stop
+			$result.ADRole = @{ Checked = $true; Installed = $feature.Installed }
+		}
+		catch {
+			$result.ADRole = @{ Checked = $false; Installed = $false; Error = $_.Exception.Message }
+		}
+	}
+
+	return $result
+}
+
+function Throw-WithLog {
+	param (
+		[Parameter(Mandatory = $true)][string]$Message
+	)
+	Write-Log -Message $Message -Level 'ERROR'
+	throw $Message
+}
