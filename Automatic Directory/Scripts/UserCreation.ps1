@@ -100,10 +100,10 @@ try {
 		}
 
 		New-ADUser `
-				-Name $AccountName `
-				-GivenName $givenName `
-				-Surname $surname `
-				-DisplayName "$givenName $surname" `
+			-Name $AccountName `
+			-GivenName $givenName `
+			-Surname $surname `
+			-DisplayName "$givenName $surname" `
 			-SamAccountName $AccountName `
 			-UserPrincipalName $upn `
 			-Path $OrganizationalUnit `

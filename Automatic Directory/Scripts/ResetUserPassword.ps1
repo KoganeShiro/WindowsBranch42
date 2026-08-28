@@ -70,7 +70,15 @@ try {
 	}
 
 	$validation = Validate-Environment -RequiredModules $requiredModules
-	$problems = @(); foreach ($m in $requiredModules) { $info = $validation.Modules[$m]; if (-not $info.Available) { $problems += "Module not available: $m" } elseif (-not $info.Loaded) { $problems += "Module available but not loaded: $m" } }
+	$problems = @();
+	foreach ($m in $requiredModules) { 
+		$info = $validation.Modules[$m]; 
+		if (-not $info.Available) { 
+			$problems += "Module not available: $m"
+		} elseif (-not $info.Loaded) {
+			$problems += "Module available but not loaded: $m"
+		}
+	}
 	if ($problems.Count -gt 0) { $msg = "Environment validation failed:`n" + ($problems -join "`n"); Write-Log -Message $msg -Level 'ERROR'; if ($Interactive) { [System.Windows.Forms.MessageBox]::Show($msg, 'Validation failed', 'OK', 'Error') }; Throw-WithLog $msg }
 catch {
 	Write-Log -Message $_.Exception.Message -Level 'ERROR'
